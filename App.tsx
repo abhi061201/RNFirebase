@@ -53,9 +53,6 @@ const App = () => {
     getAllRealTimeData();
   }, []);
 
-  useEffect(() => {
-    console.log('all data :' + JSON.stringify(allData));
-  }, [allData]);
 
   // const getData =async()=>{
   //   try {
@@ -77,7 +74,7 @@ const App = () => {
   };
   const setRealTimeData = async (data?: string) => {
     try {
-      // const newRefrence = firebaseRealtime().ref('todo').push();
+      // const newRefrence = firebaseRealtime().ref('Todo').push();
       const index = allData?.length ?? 0;
       await firebaseRealtime()
         .ref(`Todo/${index}`)
@@ -88,12 +85,15 @@ const App = () => {
         .then(() => {
           setInputText('');
         });
+      
       // newRefrence.set({
       //   value : data,
       //   uid: newRefrence.key
       // }).then(()=>{
       //     console.warn("data set successfully")
-      //   });
+      //   }).then(() => {
+      //          setInputText('');
+      //        });;
     } catch (e) {
       console.error(e);
     }
@@ -105,6 +105,7 @@ const App = () => {
       const data = await firebaseRealtime()
         .ref('Todo')
         .on('value', newData => {
+          console.log(newData.val());
           setAllData(newData.val());
         });
     } catch (error) {}
@@ -134,9 +135,13 @@ const App = () => {
           width: '100%',
           margin: 20,
           borderRadius: 10,
-          borderColor: 'blue',
+          borderColor: 'teal',
+          borderWidth: 2,
           paddingHorizontal: 10,
           color: 'black',
+        }}
+        onSubmitEditing={()=>{
+          saveDataToFirebase();
         }}
         value={inputText}
         onChangeText={value => setInputText(value)}
@@ -163,6 +168,9 @@ const App = () => {
         </View>
       </TouchableOpacity>
 
+      <Text style ={{fontSize: 30, color: 'black', marginVertical: 20,textDecorationLine: 'underline'}}>
+        ToDo List
+      </Text>
       <View style={{width: '100%'}}>
         {allData ? (
           <FlatList
@@ -214,16 +222,19 @@ const ItemUi = ({
       style={{
         flexDirection: 'row',
         width: '100%',
-        marginVertical: 10,
+        paddingVertical: 10,
+        borderRadius:10,
         justifyContent: 'space-between',
-
+        backgroundColor: '#e8e9eb',
+        paddingHorizontal:10,
+        marginBottom: 10,
       }}>
       <Text
         style={{
           color: 'grey',
           fontSize: 20,
           fontWeight: '700',
-          width: '60%',
+          width: '55%',
         }}>
         {item?.value}
       </Text>
@@ -235,7 +246,7 @@ const ItemUi = ({
             color: 'green',
             fontSize: 20,
             fontWeight: '700',
-            marginRight: 10,
+            marginRight: 5,
             marginLeft:5
           }}>
           Update  
